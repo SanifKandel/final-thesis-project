@@ -41,3 +41,59 @@ body {
 }
 h1 { color: white; font-family: 'Helvetica Neue', sans-serif; font-size: 75px; font-weight: bold; letter-spacing: -1px; line-height: 1; text-align: center; }
 </style>
+</style>
+<!-- Starts image section -->
+<div class="row justify-content-md-center mb-4">
+    <h1 id="logo">
+                RECOMMENDED MOVIES
+            </h1>
+</div>
+
+{% if my_list %}
+<div class="container">
+    <table class="styled-table">
+         <thead>
+          <tr>
+            
+            <th>Movie Name</th>
+            <th>Prediciton score</th>
+          </tr>
+        </thead>
+         <tbody>
+         {% for num, prediction, prob in my_list %}
+            <tr>
+               
+                <td>{{ prediction }}</td>
+                <td>{{ prob }}</td>
+            </tr>
+         {% endfor %}
+         </tbody>
+   </table>
+</div> 
+{% endif %}
+     
+{% if data %}
+<div class="container">
+    <table class="styled-table">
+         <thead>
+          <tr>
+            
+            <th>Movie Name</th>
+            <th>Prediciton score</th>
+            <th>Poster</th>
+          </tr>
+        </thead>
+         <tbody>
+         {% for num, prediction, prob,link in data %}
+            <tr>
+               
+                <td>{{ prediction }}</td>
+                <td>{{ prob }}</td>
+                <td><img src={{ link }} alt="" border=3 height=400 width=300></img></td>
+            </tr>
+         {% endfor %}
+         </tbody>
+   </table>
+</div>      
+{% endif %}
+{% endblock %}
