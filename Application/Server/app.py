@@ -6,3 +6,8 @@ import joblib
 import imdb
 import os
 
+MoviesData= joblib.load('Movies_Datase.pkl') 
+X = joblib.load('Movies_Learned_Features.pkl') 
+my_ratings = np.zeros((9724,1))
+my_movies=[]
+my_added_movies=[]
