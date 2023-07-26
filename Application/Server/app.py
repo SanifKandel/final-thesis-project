@@ -85,3 +85,14 @@ def addMovie():
             
             return render_template('home.html',processed_text=processed_text,movie_text=movie_text,my_added_movies=my_added_movies)
     
+@app.route('/reset/', methods=['GET','POST'])
+def reset():
+        global my_ratings
+        global my_movies
+        global my_added_movies
+        
+        my_ratings = np.zeros((9724,1))
+        my_movies=[]
+        my_added_movies=[]
+        processed_text='Successfull reset'
+        return render_template('home.html',processed_text=processed_text)
