@@ -96,3 +96,86 @@ def reset():
         my_added_movies=[]
         processed_text='Successfull reset'
         return render_template('home.html',processed_text=processed_text)
+
+
+@app.route('/predict_advance/', methods=['GET','POST'])
+def predict_advance():
+        if (len(my_added_movies)==0):
+                processed_text="Yikes! you've to add some movies before predicting anything "
+                return render_template('home.html',processed_text=processed_text)
+        data=predict(flag=1)
+        links=[]
+        data=data[:12]
+ 
+        #data=data.reset_index()
+        data=data.reset_index(drop=True)
+        titles=data['title'].values.tolist()
+        access = imdb.IMDb()
+        for movie in titles:
+            name=movie
+            movies = access.search_movie(name)[0]
+            imgLink=movies['full-size cover url']
+            links.append(imgLink)
+        data['links'] = links
+        data['links']= data.links.map(lambda x: url_clean(x))
+        data=data.values.tolist()
+        return render_template('result.html',data=data)
+@app.route('/predict/', methods=['GET','POST'])
+def predict(flag=None):
+    if request.method == "POST":
+        if (len(my_added_movies)==0):
+                processed_text="Yikes! you've to add some movies before predicting anything "
+                return render_template('home.html',processed_text=processed_text)
+        if(flag==1):
+                if (len(my_added_movies)==0):
+                        processed_text="Yikes! you've to add some movies before predicting anything "
+                        return render_template('home.html',processed_text=processed_text)
+                        #get form data
+                out_arr = my_ratings[np.nonzero(my_ratings)]
+                out_arr=out_arr.reshape(-1,1)
+                idx = np.where(my_ratings)[0]
+                X_1=[X[x] for x in idx]
+                X_1=np.array(X_1)
+                y=out_arr
+                y=np.reshape(y, -1)
+                theta = gradientDescent(X_1,y,np.zeros((100)),0.001,4000)
+                
+                p = X @ theta.T
+                p=np.reshape(p, -1)
+                predictedData=MoviesData.copy()
+                predictedData['Pridiction']=p
+                sorted_data=predictedData.sort_values(by=['Pridiction'],ascending=False)
+                #sorted_data=sorted_data[:40]
+                #sorted_data=sorted_data[~sorted_data.movieid.isin(my_movies)]
+                sorted_data=sorted_data[~sorted_data.title.isin(my_added_movies)]
+                sorted_data=sorted_data[:40]
+                return(sorted_data)
+                
+        
+        #get form data
+        out_arr = my_ratings[np.nonzero(my_ratings)]
+        out_arr=out_arr.reshape(-1,1)
+        idx = np.where(my_ratings)[0]
+        X_1=[X[x] for x in idx]
+        X_1=np.array(X_1)
+        y=out_arr
+        y=np.reshape(y, -1)
+        theta = gradientDescent(X_1,y,np.zeros((100)),0.001,4000)
+        
+        p = X @ theta.T
+        p=np.reshape(p, -1)
+        predictedData=MoviesData.copy()
+        predictedData['Pridiction']=p
+        sorted_data=predictedData.sort_values(by=['Pridiction'],ascending=False)
+        #sorted_data=sorted_data[:40]
+        #sorted_data=sorted_data[~sorted_data.movieid.isin(my_movies)]
+        sorted_data=sorted_data[~sorted_data.title.isin(my_added_movies)]
+        sorted_data=sorted_data[:40]
+        my_list=sorted_data.values.tolist()
+        
+        
+        return render_template('result.html',my_list=my_list)
+    pass
+
+if __name__ == '__main__':
+    app.run()
