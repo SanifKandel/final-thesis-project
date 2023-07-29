@@ -167,8 +167,6 @@ def predict(flag=None):
         predictedData=MoviesData.copy()
         predictedData['Pridiction']=p
         sorted_data=predictedData.sort_values(by=['Pridiction'],ascending=False)
-        #sorted_data=sorted_data[:40]
-        #sorted_data=sorted_data[~sorted_data.movieid.isin(my_movies)]
         sorted_data=sorted_data[~sorted_data.title.isin(my_added_movies)]
         sorted_data=sorted_data[:40]
         my_list=sorted_data.values.tolist()
